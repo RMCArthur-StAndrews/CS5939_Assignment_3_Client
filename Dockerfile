@@ -12,12 +12,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Load environment variables from edge.env file
-COPY edge.env .
-RUN set -o allexport && \
-    source edge.env && \
-    set +o allexport
-
 # Set the PYTHONPATH to the project's root directory
 ENV PYTHONPATH=/app
 
