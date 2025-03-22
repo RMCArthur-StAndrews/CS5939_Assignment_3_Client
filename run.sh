@@ -1,17 +1,16 @@
 #!/bin/bash
 
-# Install required packages
-pip install -r requirements.txt
+# Define variables
+IMAGE_NAME="client"
+CONTAINER_NAME="CS5939_A3_Client"
 
-# Load environment variables from edge.env file
-if [ -f edge.env ]; then
-  set -o allexport
-  source edge.env
-  set +o allexport
+# Build the Docker image
+docker build -t $IMAGE_NAME .
+
+# Remove any existing container with the same name
+if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+    docker rm -f $CONTAINER_NAME
 fi
 
-# Set the PYTHONPATH to the project's root directory
-export PYTHONPATH=$(pwd)
-
-# Run the Python application
-python Controllers/Main.py
+# Run the Docker container
+docker run --name $CONTAINER_NAME -d $IMAGE_NAME
