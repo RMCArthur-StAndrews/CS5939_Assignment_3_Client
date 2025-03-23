@@ -23,5 +23,8 @@ COPY . .
 # Set the PYTHONPATH to the project's root directory
 ENV PYTHONPATH=/app
 
+# Expose the port the app runs on (Keep on 4000 as other services run elsewhere)
+EXPOSE 4000
+
 # Specify the command to run the application
 CMD ["python", "Controllers/Main.py"]
