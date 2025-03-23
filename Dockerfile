@@ -6,8 +6,13 @@ WORKDIR /app
 # Copy the requirements file
 COPY requirements.txt .
 
-# Install required packages
-RUN pip install --no-cache-dir -r requirements.txt && pip check
+# Install system dependencies for OpenCV
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0
+
+# Install required Python packages
+RUN pip install --no-cache-dir --no-deps -r requirements.txt && pip check
 
 # Copy the rest of the application code
 COPY . .
