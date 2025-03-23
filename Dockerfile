@@ -9,7 +9,10 @@ COPY requirements.txt .
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
-    libglib2.0-0
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1
 
 # Install required Python packages
 RUN pip install --no-cache-dir --no-deps -r requirements.txt && pip check
