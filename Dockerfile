@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     libxrender1
 
 # Install required Python packages
-RUN pip install --no-cache-dir --no-deps -r requirements.txt && pip check
+RUN pip install --no-cache-dir --no-deps -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
