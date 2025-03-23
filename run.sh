@@ -5,7 +5,7 @@ CLIENT_IMAGE_NAME="client"
 CLIENT_CONTAINER_NAME="CS5939_A3_Client"
 
 # Define variables for the edge-client
-EDGE_CLIENT_IMAGE_NAME="edgeclient"
+EDGE_CLIENT_IMAGE_NAME="edge-client"
 EDGE_CLIENT_CONTAINER_NAME="CS5939_A3_Edge_Client"
 
 # Build the Docker image for the client
@@ -21,6 +21,12 @@ docker run --name $CLIENT_CONTAINER_NAME -d $CLIENT_IMAGE_NAME
 
 # Navigate to the edge-client directory
 cd edge-client
+
+# Check if Dockerfile exists in the edge-client directory
+if [ ! -f Dockerfile ]; then
+    echo "Dockerfile not found in edge-client directory"
+    exit 1
+fi
 
 # Build the Docker image for the edge-client
 docker build -t $EDGE_CLIENT_IMAGE_NAME .
