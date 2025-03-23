@@ -22,10 +22,10 @@ class TestVideoAnalyticsService(unittest.TestCase):
         output_path = "output_test.mp4"
 
         # Run the video processing
-        self.video_service.run(input_path, output_path)
+        result_path = self.video_service.run(input_path, output_path)
 
         # Check if the output file is created
-        self.assertTrue(os.path.exists(output_path))
+        self.assertTrue(os.path.exists(result_path))
 
 if __name__ == "__main__":
     unittest.main()

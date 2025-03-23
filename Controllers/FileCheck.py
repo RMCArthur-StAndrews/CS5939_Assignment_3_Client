@@ -40,7 +40,6 @@ class FileCheck(threading.Thread):
                 raise ValueError("Output filename is empty")
             self.video_service.run(input_file, output_file)
             processed_file = os.path.join(self.processed_folder, os.path.basename(input_file))
-            shutil.move(input_file, processed_file)
         except ValueError as ve:
             print(f"ValueError processing file {input_file}: {ve}")
         except Exception as e:

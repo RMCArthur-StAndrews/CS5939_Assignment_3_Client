@@ -10,11 +10,11 @@ class VideoAnalyticsService:
         self.color_map = {}
         self.thickness = 2
 
-    def run(self, input_path, output_path):
+    def run(self, input_path, output_file_name):
         cap = self.load_video(input_path)
         filename = os.path.basename(input_path)
         frame_width, frame_height, fps = self.get_video_properties(cap)
-        out = self.create_video_writer(output_path, frame_width, frame_height, fps, filename)
+        out, file_path = self.create_video_writer(output_file_name, frame_width, frame_height, fps)
         if not cap.isOpened():
             raise ValueError("Failed to open prior to load")
         try:
@@ -22,7 +22,7 @@ class VideoAnalyticsService:
         finally:
             self.release_resources(cap, out)
 
-        self.play_video(output_path)
+        return file_path
 
     def load_video(self, file_path):
         cap = cv2.VideoCapture(file_path)
@@ -36,8 +36,12 @@ class VideoAnalyticsService:
         fps = cap.get(cv2.CAP_PROP_FPS)
         return frame_width, frame_height, fps
 
-    def create_video_writer(self, output_path, frame_width, frame_height, fps, file_name):
-        return cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))
+    def create_video_writer(self, file_name, frame_width, frame_height, fps):
+        output_file_path = os.path.join('tmp', file_name)
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+        video_writer = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc(*'VP80'), fps,
+                                       (frame_width, frame_height))
+        return video_writer, os.path.abspath(output_file_path)
 
     def process_video_frames(self, cap, out, model_service):
         frame_skip = 6  # Number of frames to skip
