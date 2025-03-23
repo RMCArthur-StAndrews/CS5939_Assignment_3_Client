@@ -5,7 +5,7 @@ CLIENT_IMAGE_NAME="client"
 CLIENT_CONTAINER_NAME="CS5939_A3_Client"
 
 # Define variables for the edge-client
-EDGE_CLIENT_IMAGE_NAME="edge-client"
+EDGE_CLIENT_IMAGE_NAME="edgeclient"
 EDGE_CLIENT_CONTAINER_NAME="CS5939_A3_Edge_Client"
 
 # Build the Docker image for the client
