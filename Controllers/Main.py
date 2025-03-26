@@ -1,8 +1,8 @@
 import logging
-
+import requests
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from Controllers.ServiceCheck import CloudBackendChecker
 from Utils.CloudVideoAnalytics import CloudVideoAnalytics
 from Utils.VideoAnalyticsService import VideoAnalyticsService
@@ -10,9 +10,32 @@ import threading
 import mimetypes
 import os
 
+# Load environment variables from a .env file
+dotenv_path = find_dotenv('edge.env')
+if not dotenv_path:
+    raise EnvironmentError("edge.env file not found")
+load_dotenv(dotenv_path)
+
 app = Flask(__name__)
 CORS(app)
-logging.basicConfig(level=logging.INFO)# Enable CORS
+logging.basicConfig(level=logging.INFO)  # Enable CORS
+
+# Ensure the CLOUD_PATH environment variable is set
+base_url = os.getenv('CLOUD_PATH')
+if not base_url:
+    raise EnvironmentError("CLOUD_PATH environment variable is not set")
+
+@app.route('/check-signal', methods=['GET'])
+def check_signal():
+    try:
+        response = requests.get(base_url + "/utils")
+        if response.status_code== 200:
+            return jsonify("Connection Successful"), 200
+        else:
+            return jsonify("Connection Failed"), 500
+    except Exception as e:
+        return jsonify(f"Error checking signal: {e}"), 500
+
 
 @app.route('/process-video', methods=['POST'])
 def process_video():

@@ -23,6 +23,8 @@ COPY . .
 # Set the PYTHONPATH to the project's root directory
 ENV PYTHONPATH=/app
 
+ENV CLOUD_PATH=10.0.0.2
+
 # Expose the port the app runs on (Keep on 4000 as other services run elsewhere)
 EXPOSE 4000
 

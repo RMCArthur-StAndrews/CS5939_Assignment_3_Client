@@ -8,7 +8,7 @@ import requests
 class CloudVideoAnalytics:
 
     def __init__(self):
-        self.base_url = "http://127.0.0.1:5000"
+        self.base_url = os.environ['CLOUD_PATH']
         if not self.base_url:
             raise ValueError("CLOUD_PATH environment variable is not set.")
         self.cloud_key = base64.urlsafe_b64encode(b"CLOUD_KEY".ljust(32, b'\0'))
