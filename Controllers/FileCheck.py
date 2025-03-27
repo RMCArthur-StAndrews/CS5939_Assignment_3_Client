@@ -1,8 +1,7 @@
 import os
 import time
 import threading
-import shutil
-from Utils.VideoAnalyticsService import VideoAnalyticsService
+
 
 class FileCheck(threading.Thread):
     def __init__(self, input_file_path, video_service):

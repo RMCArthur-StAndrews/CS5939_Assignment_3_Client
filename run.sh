@@ -1,5 +1,8 @@
 #!/bin/bash
 
+docker stop --all
+docker system prune -af
+
 # Define variables for the client
 CLIENT_IMAGE_NAME="client"
 CLIENT_CONTAINER_NAME="CS5939_A3_Client"
