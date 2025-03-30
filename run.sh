@@ -46,5 +46,5 @@ docker run --name $EDGE_CLIENT_CONTAINER_NAME -d -p 3000:3000 $EDGE_CLIENT_IMAGE
 cd ..
 
 # Use docker-compose to manage the services
-docker-compose down
-docker-compose up -d
+podman-compose down
+podman-compose up -d
