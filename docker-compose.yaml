@@ -10,7 +10,7 @@ services:
     ports:
       - "4000:4000"
     networks:
-      - app-network
+      - podman
 
   edge-client:
     image: edge-client
@@ -21,8 +21,8 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - app-network
+      - podman
 
 networks:
-  app-network:
-    driver: bridge
+  podman:
+    external: true
