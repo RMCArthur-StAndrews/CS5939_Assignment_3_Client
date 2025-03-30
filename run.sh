@@ -5,11 +5,11 @@ docker system prune -af
 
 # Define variables for the client
 CLIENT_IMAGE_NAME="client"
-CLIENT_CONTAINER_NAME="CS5939_A3_Client"
+CLIENT_CONTAINER_NAME="client-api"
 
 # Define variables for the edge-client
 EDGE_CLIENT_IMAGE_NAME="edge-client"
-EDGE_CLIENT_CONTAINER_NAME="CS5939_A3_Edge_Client"
+EDGE_CLIENT_CONTAINER_NAME="edge-client"
 
 # Build the Docker image for the client
 docker build -t $CLIENT_IMAGE_NAME .
@@ -41,3 +41,10 @@ fi
 
 # Run the Docker container for the edge-client
 docker run --name $EDGE_CLIENT_CONTAINER_NAME -d -p 3000:3000 $EDGE_CLIENT_IMAGE_NAME
+
+# Navigate back to the root directory
+cd ..
+
+# Use docker-compose to manage the services
+docker-compose down
+docker-compose up -d
