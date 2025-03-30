@@ -5,6 +5,8 @@ services:
     image: client-api
     container_name: client-api
     hostname: client-api
+    expose:
+      - "4000"
     ports:
       - "4000:4000"
     networks:
