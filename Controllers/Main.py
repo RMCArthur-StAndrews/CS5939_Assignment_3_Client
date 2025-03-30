@@ -86,6 +86,8 @@ def is_file_in_use(file_path):
 def cleanup_tmp_folder():
     while True:
         time.sleep(60)  # Wait for 1 minute
+        if not os.path.exists('tmp'):
+            os.makedirs('tmp')
         for filename in os.listdir('tmp'):
             file_path = os.path.join('tmp', filename)
             if not is_file_in_use(file_path):
@@ -94,6 +96,9 @@ def cleanup_tmp_folder():
                     logging.info(f"Removed file: {file_path}")
                 except Exception as e:
                     logging.error(f"Error removing file {file_path}: {e}")
+
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
 
 cleanup_thread = threading.Thread(target=cleanup_tmp_folder, daemon=True)
 cleanup_thread.start()
