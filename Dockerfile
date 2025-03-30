@@ -29,4 +29,4 @@ ENV CLOUD_PATH=10.0.0.2
 EXPOSE 4000
 
 # Specify the command to run the application
-CMD ["python", "Controllers/Main.py"]
+CMD ["python", "Controllers/Main.py", "--host=0.0.0.0", "--port=4000"]
