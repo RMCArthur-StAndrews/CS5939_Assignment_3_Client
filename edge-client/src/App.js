@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/check-signal');
+        const response = await axios.get('http://127.0.0.1:4000/check-signal');
         if (response.status === 200 && response.data === "Connection Successful") {
           setBackendAvailable(true);
         } else {
