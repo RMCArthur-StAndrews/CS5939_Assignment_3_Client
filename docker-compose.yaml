@@ -4,6 +4,7 @@ services:
   client-api:
     image: client
     container_name: client-api
+    hostname: client-api
     ports:
       - "4000:4000"
     networks:
@@ -12,6 +13,7 @@ services:
   edge-client:
     image: edge-client
     container_name: edge-client
+    hostname: edge-client
     depends_on:
       - client-api
     ports:
