@@ -104,4 +104,4 @@ cleanup_thread = threading.Thread(target=cleanup_tmp_folder, daemon=True)
 cleanup_thread.start()
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    app.run(host='0.0.0.0', port=4000)
