@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   client-api:
-    image: client
+    image: client-api
     container_name: client-api
     hostname: client-api
     ports:

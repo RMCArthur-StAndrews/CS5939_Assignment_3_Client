@@ -4,7 +4,7 @@ docker stop --all
 docker system prune -af
 
 # Define variables for the client
-CLIENT_IMAGE_NAME="client"
+CLIENT_IMAGE_NAME="client-api"
 CLIENT_CONTAINER_NAME="client-api"
 
 # Define variables for the edge-client
