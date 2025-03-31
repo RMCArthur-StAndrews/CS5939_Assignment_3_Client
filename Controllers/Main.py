@@ -9,6 +9,9 @@ import mimetypes
 import os
 import threading
 import time
+import ssl
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.poolmanager import PoolManager
 
 """
 Load Environment Variables for the session if present
@@ -30,16 +33,25 @@ base_url = os.getenv('CLOUD_PATH')
 if not base_url:
     raise EnvironmentError("CLOUD_PATH environment variable is not set")
 
+class SSLAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1  # Adjust SSL/TLS versions as needed
+        kwargs['ssl_context'] = context
+        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+
 def make_request(method, url, **kwargs):
     """
-    Wrapper function for making HTTP requests.
+    Wrapper function for making HTTP requests with custom SSL settings.
     :param method: HTTP method (e.g., 'get', 'post')
     :param url: URL to make the request to
     :param kwargs: Additional arguments to pass to the requests method
     :return: Response object
     """
+    session = requests.Session()
+    session.mount('https://', SSLAdapter())
     try:
-        response = requests.request(method, url, **kwargs)
+        response = session.request(method, url, **kwargs)
         response.raise_for_status()
         return response
     except requests.exceptions.RequestException as e:
