@@ -30,6 +30,22 @@ base_url = os.getenv('CLOUD_PATH')
 if not base_url:
     raise EnvironmentError("CLOUD_PATH environment variable is not set")
 
+def make_request(method, url, **kwargs):
+    """
+    Wrapper function for making HTTP requests.
+    :param method: HTTP method (e.g., 'get', 'post')
+    :param url: URL to make the request to
+    :param kwargs: Additional arguments to pass to the requests method
+    :return: Response object
+    """
+    try:
+        response = requests.request(method, url, **kwargs)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Request failed: {e}")
+        raise
+
 @app.route('/check-signal', methods=['GET'])
 def check_signal():
     """
@@ -38,14 +54,13 @@ def check_signal():
     :return: 200 if successful, 500 if failed
     """
     try:
-        response = requests.get(base_url + "/utils")
+        response = make_request('get', base_url + "/utils")
         if response.status_code == 200:
             return jsonify("Connection Successful"), 200
         else:
             return jsonify("Connection Failed"), 500
     except Exception as e:
         return jsonify(f"Error checking signal: {e}"), 500
-
 
 @app.route('/process-video', methods=['POST'])
 def process_video():
