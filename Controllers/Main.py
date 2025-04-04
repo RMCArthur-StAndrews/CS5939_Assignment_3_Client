@@ -8,10 +8,12 @@ from Utils.VideoAnalyticsService import VideoAnalyticsService
 import mimetypes
 import os
 import threading
-import time
-import ssl
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
+from Controllers.FileHandler import FileHandler
+from Utils.SSLAdapter import make_request
+
+"""
+Run startup checks and script
+"""
 
 """
 Load Environment Variables for the session if present
@@ -22,42 +24,32 @@ if not dotenv_path:
 load_dotenv(dotenv_path)
 
 """
-Flask Configuration
+Flask Configuration (including CORS)
 """
 app = Flask(__name__)
 CORS(app)
+"""
+Enable basic Logging 
+"""
 logging.basicConfig(level=logging.INFO)  # Enable CORS
 
 # Ensure the CLOUD_PATH environment variable is set
 base_url = os.getenv('CLOUD_PATH')
+print("Connected to "+ base_url + " as base backend")
 if not base_url:
     raise EnvironmentError("CLOUD_PATH environment variable is not set")
 
-class SSLAdapter(HTTPAdapter):
-    def init_poolmanager(self, *args, **kwargs):
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1  # Adjust SSL/TLS versions as needed
-        kwargs['ssl_context'] = context
-        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
 
-def make_request(method, url, **kwargs):
-    """
-    Wrapper function for making HTTP requests with custom SSL settings.
-    :param method: HTTP method (e.g., 'get', 'post')
-    :param url: URL to make the request to
-    :param kwargs: Additional arguments to pass to the requests method
-    :return: Response object
-    """
-    session = requests.Session()
-    session.mount('https://', SSLAdapter())
-    try:
-        response = session.request(method, url, **kwargs)
-        response.raise_for_status()
-        return response
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request failed: {e}")
-        raise
+file_check = FileHandler('tmp', VideoAnalyticsService(CloudVideoAnalytics()))
+file_check.start()
 
+
+
+"""
+End Startup Checks and Script
+"""
 @app.route('/check-signal', methods=['GET'])
 def check_signal():
     """
@@ -74,11 +66,12 @@ def check_signal():
     except Exception as e:
         return jsonify(f"Error checking signal: {e}"), 500
 
+
 @app.route('/process-video', methods=['POST'])
 def process_video():
     """
     Send video file to cloud for processing
-    :return:
+    :return: return the processed file
     """
     try:
         file = request.files['file']
@@ -96,39 +89,21 @@ def process_video():
         mimetype, _ = mimetypes.guess_type(output_file_path)
         file_size = os.path.getsize(output_file_path)
         logging.info("File size: " + str(file_size))
-        response = send_file(output_file_path, as_attachment=True, download_name=output_file_name, mimetype=mimetype, conditional=True)
+        response = send_file(output_file_path, as_attachment=True, download_name=output_file_name, mimetype=mimetype,
+                             conditional=True)
         response.headers['Content-Length'] = file_size
 
         return response, 200
+    except KeyError as e:
+        logging.error(f"Missing key in request: {e}")
+        return jsonify(f"Error processing video: Missing key {e}"), 400
+    except FileNotFoundError as e:
+        logging.error(f"File not found: {e}")
+        return jsonify(f"Error processing video: File not found {e}"), 404
     except Exception as e:
+        logging.error(f"Unexpected error: {e}")
         return jsonify(f"Error processing video: {e}"), 500
 
-def is_file_in_use(file_path):
-    try:
-        os.rename(file_path, file_path)
-        return False
-    except OSError:
-        return True
-
-def cleanup_tmp_folder():
-    while True:
-        time.sleep(60)  # Wait for 1 minute
-        if not os.path.exists('tmp'):
-            os.makedirs('tmp')
-        for filename in os.listdir('tmp'):
-            file_path = os.path.join('tmp', filename)
-            if not is_file_in_use(file_path):
-                try:
-                    os.remove(file_path)
-                    logging.info(f"Removed file: {file_path}")
-                except Exception as e:
-                    logging.error(f"Error removing file {file_path}: {e}")
-
-if not os.path.exists('tmp'):
-    os.makedirs('tmp')
-
-cleanup_thread = threading.Thread(target=cleanup_tmp_folder, daemon=True)
-cleanup_thread.start()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=4000)
