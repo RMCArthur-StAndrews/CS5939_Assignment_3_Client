@@ -38,7 +38,7 @@ From here, the service should run without any issues.
 ## Running on Containers
 **Note(1):** The container scripts are written to support the deployment to the two VM's used for the assignment. This project is permitted to use CS5939-vm01.st-andrews.ac.uk for deployment. Please do not deploy it to any other services; otherwise, it will cause unexpected errors. Specifically, in the cloud system sender identification functionality, which prevents non-whitelisted IP's from interacting with the service.
 **Note(2):** The run scripts are designed for production deployments only.
-</b>
+### Port Requirements
 If running the service on a container, you will not need to consider which ports are available, as it is expected that the container should have those ports available. 
 To run on a container, ensure that your machine(s) have Docker / Podman installed to facilitate the containerisation environment. 
 ### Running the container
