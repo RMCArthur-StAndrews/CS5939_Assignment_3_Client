@@ -70,9 +70,10 @@ class VideoAnalyticsService:
         """
         output_file_path = os.path.join('tmp', file_name)
         os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-        video_writer = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc(*'VP80'), fps,
+        video_writer = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc(*'XVID'), fps,
                                        (frame_width, frame_height))
         return video_writer, os.path.abspath(output_file_path)
+
 
     def process_video_frames(self, cap, out, model_service):
         """
