@@ -3,6 +3,7 @@ import json
 import os
 from cryptography.fernet import Fernet
 import requests
+import traceback
 
 class CloudVideoAnalytics:
     """
@@ -23,18 +24,23 @@ class CloudVideoAnalytics:
         self.edge_to_cloud_encrypt = Fernet(self.edge_key)
         self.cloud_to_edge_decrypt = Fernet(self.cloud_key)
 
-    def get_analytics(self, encoded_frame: bytes) -> dict:
+    def get_analytics(self, encoded_frames: list) -> list:
         """
         Method handles the interaction with the cloud video analytics service.
-        :param encoded_frame: The frame to be sent to the cloud service for processing
-        :return: The data on the image returned from the cloud service, should be in data dictionary format
+        :param encoded_frames: The list of frames to be sent to the cloud service for processing
+        :return: The data on the images returned from the cloud service, should be in a list of data dictionaries format
         """
         try:
-            encrypted_frame = self.edge_to_cloud_encrypt.encrypt(encoded_frame)
-            response = requests.post(self.base_url + "/stream-handling", files={"image": encrypted_frame})
+
+            files = [
+                ("image", (f"frame_{i}.bin", self.edge_to_cloud_encrypt.encrypt(frame), "application/octet-stream")) for
+                i, frame in enumerate(encoded_frames)]
+
+            response = requests.post(self.base_url + "/stream-handling", files=files)
             response.raise_for_status()
-            decrypt = self.cloud_to_edge_decrypt.decrypt(response.json()['data'].encode())
-            detections = json.loads(decrypt)
+
+            decrypted_data = self.cloud_to_edge_decrypt.decrypt(response.json()['data'].encode('utf-8'))
+            detections = json.loads(decrypted_data)
             return detections
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")
