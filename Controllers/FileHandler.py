@@ -32,7 +32,7 @@ class FileHandler(threading.Thread):
         """
         while self.running:
             self.cleanup_tmp_folder()
-            time.sleep(30)  # Pulse every 30 seconds
+            time.sleep(100)  # Pulse every 30 seconds
 
     def check_for_new_files(self):
         """
