@@ -1,0 +1,9 @@
+!/.idea/*
+!/.venv/*
+!/edge-client/build/*
+
+!/edge-client/node_modules/*
+!/.idea/workspace.xml
+
+!/.idea/vcs.xml
+!/.idea/CS5939_Assignment_3_Client.iml

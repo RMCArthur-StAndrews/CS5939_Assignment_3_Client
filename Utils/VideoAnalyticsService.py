@@ -1,6 +1,8 @@
 import os
 import random
 import cv2
+import numpy as np
+
 
 class VideoAnalyticsService:
     """
@@ -72,6 +74,7 @@ class VideoAnalyticsService:
                                        (frame_width, frame_height))
         return video_writer, os.path.abspath(output_file_path)
 
+
     def process_video_frames(self, cap, out, model_service):
         """
         Main method for processing frames of the video file.
@@ -79,24 +82,51 @@ class VideoAnalyticsService:
         :param out: The name of the output file
         :param model_service: The video service to use
         """
-        frame_skip = 6  # Number of frames to skip
+        frame_skip = 6
         frame_count = 0
-        last_result = None
+        frames_to_process = []
+
 
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
+            frame_count += frame_skip
+            frame_bytes = self.encode_frame_to_bytes(frame)
+            frames_to_process.append(frame_bytes)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count)
 
-            frame_count += 1
-            if frame_count % frame_skip == 0:
-                frame_bytes = self.encode_frame_to_bytes(frame)
-                last_result = model_service.get_analytics(frame_bytes)
-                self.validate_result(last_result)
+        if frames_to_process:
+            results = model_service.get_analytics(frames_to_process)
 
-            if last_result:
-                self.draw_detections(frame, last_result['detections'])
-            out.write(frame)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            frame_count = 0
+            result_index = 0
+            result = results[result_index] if results else None
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
+
+                frame_count += 1
+                if frame_count % frame_skip == 0 and result_index < len(results) - 1:
+                    result_index += 1
+                    result = results[result_index]
+
+                if result:
+                    self.validate_result(result)
+                    self.draw_detections(frame, result['detections'])
+                out.write(frame)
+
+    def decode_bytes_to_frame(self, frame_bytes):
+        """
+        Method to decode bytes back to a video frame.
+        :param frame_bytes: The bytes to decode
+        :return: The decoded video frame
+        """
+        np_arr = np.frombuffer(frame_bytes, np.uint8)
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        return frame
 
     def encode_frame_to_bytes(self, frame):
         """
