@@ -50,8 +50,12 @@ If this is your first time running it, you might find you get a permission issue
     chmod +x run.sh
 ### Loading the webapp into your local machine (when deployed to VM's) 
 To access the web app for the client end of the service. You will first be required to carry out some SSH tunneling to achieve this. You can do this via the following command in the terminal: 
-<Insert code here> 
+
+    ssh -L <insert your routed to port>:127.0.0.1:3000 <username>-vm01.st-andrews.ac.uk -N -v -v -v
+    ssh -L <insert your other routed to port>:127.0.0.1:4000 <username>-vm01.st-andrews.ac.uk -N -v -v -v
+
 Then make sure the edge API is also supported. This can be done with a secondary SSH Tunneling request as shown below. You may be required to enter your VM's password to gain access. 
 
+    https:\\localhost:<inser your routed to port>
 Please do not change the port numberings for this as they ensure all services can run at the same time on your device (via tunneling)
 Once that is completed, you can then view the edge device webpage via the link below
