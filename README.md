@@ -48,3 +48,14 @@ The components of this system can be run on containers. As part of this assignme
 If this is your first time running it, you might find you get a permission issue. If that is the case, then you need to make sure there is permission to run it on your machine. This can be done with the following command in the terminal
 
     chmod +x run.sh
+### Loading the webapp into your local machine (when deployed to VM's) 
+To access the web app for the client end of the service. You will first be required to carry out some SSH tunneling to achieve this. You can do this via the following command in the terminal: 
+
+    ssh -L 3000:127.0.0.1:3000 <username>-vm01.st-andrews.ac.uk -N -v -v -v
+    ssh -L 4000:127.0.0.1:4000 <username>-vm01.st-andrews.ac.uk -N -v -v -v
+
+Then make sure the edge API is also supported. This can be done with a secondary SSH Tunneling request as shown below. You may be required to enter your VM's password to gain access. 
+
+    https:\\localhost:3000
+Please do not change the port numberings for this as they ensure all services can run at the same time on your device (via tunneling)
+Once that is completed, you can then view the edge device webpage via the link below
