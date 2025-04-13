@@ -78,12 +78,12 @@ def process_video():
         input_file_path = os.path.join('tmp', file.filename)
         os.makedirs(os.path.dirname(input_file_path), exist_ok=True)
         file.save(input_file_path)
-        g.input_file_path = input_file_path  # Store input file path in g
+        g.input_file_path = input_file_path
 
         output_file_name = "output_" + file.filename
         service = VideoAnalyticsService(CloudVideoAnalytics())
         output_file_path = service.run(input_file_path, output_file_name)
-        g.output_file_path = output_file_path  # Store output file path in g
+        g.output_file_path = output_file_path
 
         logging.info("Output file path: " + output_file_path)
         mimetype, _ = mimetypes.guess_type(output_file_path)

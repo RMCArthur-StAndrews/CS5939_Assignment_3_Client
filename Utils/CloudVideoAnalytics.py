@@ -17,7 +17,7 @@ class CloudVideoAnalytics:
         self.base_url = os.environ['CLOUD_PATH']
         if not self.base_url:
             raise ValueError("CLOUD_PATH environment variable is not set.")
-        # Here demonstrates the use of the end to end encryption as an example
+        #This is just an example of encryption in the system, beyond a proof of concept use more appropriate tools
         self.cloud_key = base64.urlsafe_b64encode(b"CLOUD_KEY".ljust(32, b'\0'))
         self.edge_key = base64.urlsafe_b64encode(b"EDGE_KEY".ljust(32, b'\0'))
         self.edge_to_cloud_encrypt = Fernet(self.edge_key)

@@ -19,8 +19,6 @@ class FileHandler(threading.Thread):
         self.video_service = video_service
         self.running = True
         self.processed_files = set()
-
-        # Create folders if they don't exist
         os.makedirs(self.input_file_path, exist_ok=True)
         os.makedirs(self.processed_folder, exist_ok=True)
         os.makedirs(self.output_folder, exist_ok=True)
@@ -32,7 +30,76 @@ class FileHandler(threading.Thread):
         """
         while self.running:
             self.cleanup_tmp_folder()
-            time.sleep(600)  # Pulse every 10 minutes
+            time.sleep(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            )  # Pulse every 10 minutes
 
     def check_for_new_files(self):
         """

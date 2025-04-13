@@ -29,10 +29,8 @@ function App() {
         setBackendAvailable(false);
       }
     };
-
-    // Check backend availability every 60 seconds
     const intervalId = setInterval(checkBackend, 60000);
-    checkBackend(); // Initial check
+    checkBackend();
 
     return () => clearInterval(intervalId); // Cleanup on component unmount
   }, []);
