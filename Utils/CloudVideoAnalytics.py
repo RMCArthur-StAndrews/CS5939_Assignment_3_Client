@@ -13,7 +13,6 @@ class CloudVideoAnalytics:
         """
          Constructor for cloud analytics class
 
-        :return:
         """
         self.base_url = os.environ['CLOUD_PATH']
         if not self.base_url:
