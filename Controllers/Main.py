@@ -27,7 +27,7 @@ load_dotenv(dotenv_path)
 Flask Configuration (including CORS)
 """
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 """
 Enable basic Logging 
 """
